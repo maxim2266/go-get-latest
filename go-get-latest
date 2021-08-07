@@ -1,0 +1,50 @@
+#!/bin/sh -e
+
+die() {
+	echo >&2 "$0: error:" "$@"
+	exit 1
+}
+
+quit() {
+	echo >&2 "$@"
+	exit 0
+}
+
+# get versions
+VER="$(curl -sLf 'https://golang.org/VERSION?m=text')" \
+|| die 'Cannot contact golang.org to check the latest Go version.'
+
+[ "$VER" != "$(go version 2>/dev/null | cut -d ' ' -f 3)" ] \
+|| quit "Current Go version ${VER#go} is the latest."
+
+echo "Found new Go version ${VER#go}, downloading..."
+
+# working directory
+WD="$(mktemp -d)"
+
+# shellcheck disable=SC2064
+trap "rm -rf $WD" EXIT
+# shellcheck disable=SC2064
+trap "echo >&2 '$0: interrupted!'" INT TERM QUIT HUP
+
+# download
+ARCHIVE="$VER.linux-amd64.tar.gz"
+URL="https://dl.google.com/go/$ARCHIVE"
+
+curl -sLf -o "$WD/$ARCHIVE" "$URL" || die "Cannot download Go from $URL"
+
+# remove any previous installation
+echo "Installing (requires sudo)..."
+
+INSTALL_DIR=/usr/local
+
+[ -d "$INSTALL_DIR/go" ] && sudo rm -rf "$INSTALL_DIR/go"
+
+# extract archive
+sudo tar -C "$INSTALL_DIR" -xzf "$WD/$ARCHIVE"
+
+# install tools
+echo "Updating Go tools..."
+go get -u golang.org/x/tools/cmd/goimports golang.org/x/lint/golint
+
+echo "Installation complete."
