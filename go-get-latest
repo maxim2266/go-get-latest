@@ -45,6 +45,6 @@ sudo tar -C "$INSTALL_DIR" -xzf "$WD/$ARCHIVE"
 
 # install tools
 echo "Updating Go tools..."
-go install golang.org/x/tools/cmd/goimports@latest golang.org/x/lint/golint@latest
+go install golang.org/x/tools/cmd/goimports@latest
 
 echo "Installation complete."
