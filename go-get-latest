@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 die() {
-	echo >&2 "$0: error:" "$@"
+	echo >&2 "$0: [error]" "$@"
 	exit 1
 }
 
@@ -10,12 +10,14 @@ quit() {
 	exit 0
 }
 
-# get versions
+# get version
 VER="$(curl -sLf 'https://golang.org/VERSION?m=text')" \
-|| die 'Cannot contact golang.org to check the latest Go version.'
+|| die 'Cannot contact golang.org to get the latest Go version.'
 
-[ "$VER" != "$(go version 2>/dev/null | cut -d ' ' -f 3)" ] \
-|| quit "Current Go version ${VER#go} is the latest."
+# check current version, if installed
+[ -x "$(command -v go)" ]	\
+&& [ "$VER" = "$(go version | cut -d ' ' -f 3)" ]	\
+&& quit "Current Go version ${VER#go} is the latest."
 
 echo "Found new Go version ${VER#go}, downloading..."
 
