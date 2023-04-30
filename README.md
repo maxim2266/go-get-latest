@@ -6,6 +6,7 @@ A little script to download and install the latest version of Go. It also instal
 - `goimports`.
 - `guru`
 - `gopls`
+- `staticcheck`
 
 Installation directory: `/usr/local/go`
 
