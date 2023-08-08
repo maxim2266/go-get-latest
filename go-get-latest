@@ -14,6 +14,8 @@ quit() {
 VER="$(curl -sLf 'https://golang.org/VERSION?m=text')" \
 || die 'Cannot contact golang.org to get the latest Go version.'
 
+VER="$(echo "$VER" | grep ^go)"
+
 # check current version, if installed
 [ -x "$(command -v go)" ]	\
 && [ "$VER" = "$(go version | cut -d ' ' -f 3)" ]	\
@@ -31,7 +33,7 @@ trap "echo >&2 '$0: interrupted!'" INT TERM QUIT HUP
 
 # download
 ARCHIVE="$VER.linux-amd64.tar.gz"
-URL="https://dl.google.com/go/$ARCHIVE"
+URL="https://go.dev/dl/$ARCHIVE"
 
 curl -sLf -o "$WD/$ARCHIVE" "$URL" || die "Cannot download Go from $URL"
 
