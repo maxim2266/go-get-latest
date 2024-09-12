@@ -47,6 +47,9 @@ INSTALL_DIR=/usr/local
 # extract archive
 sudo tar -C "$INSTALL_DIR" -xzf "$WD/$ARCHIVE"
 
+# make sure telemetry is off
+go telemetry off
+
 # install tools
 echo "Updating Go tools..."
 go install golang.org/x/tools/cmd/goimports@latest
