@@ -17,7 +17,7 @@ VER="$(curl -sLf 'https://golang.org/VERSION?m=text')" \
 VER="$(echo "$VER" | grep ^go)"
 
 # check current version, if installed
-[ -x "$(command -v go)" ]	\
+[ -n "$(which go)" ]	\
 && [ "$VER" = "$(go version | cut -d ' ' -f 3)" ]	\
 && quit "Current Go version ${VER#go} is the latest."
 
@@ -47,13 +47,15 @@ INSTALL_DIR=/usr/local
 # extract archive
 sudo tar -C "$INSTALL_DIR" -xzf "$WD/$ARCHIVE"
 
+GO="$INSTALL_DIR/go/bin/go"
+
 # make sure telemetry is off
-go telemetry off
+"$GO" telemetry off
 
 # install tools
 echo "Updating Go tools..."
-go install golang.org/x/tools/cmd/goimports@latest
-go install golang.org/x/tools/gopls@latest
-go install honnef.co/go/tools/cmd/staticcheck@latest
+"$GO" install golang.org/x/tools/cmd/goimports@latest
+"$GO" install golang.org/x/tools/gopls@latest
+"$GO" install honnef.co/go/tools/cmd/staticcheck@latest
 
 echo "Installation complete."
