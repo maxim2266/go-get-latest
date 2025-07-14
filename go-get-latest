@@ -56,6 +56,7 @@ GO="$INSTALL_DIR/go/bin/go"
 echo "Updating Go tools..."
 "$GO" install golang.org/x/tools/cmd/goimports@latest
 "$GO" install golang.org/x/tools/gopls@latest
+"$GO" install golang.org/x/tools/cmd/deadcode@latest
 "$GO" install honnef.co/go/tools/cmd/staticcheck@latest
 
 echo "Installation complete."
